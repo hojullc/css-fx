@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>css-fx demo</title>
+<link rel="stylesheet" href="../src/css-fx.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+       background:#f8fafc;color:#1a202c;padding:40px 24px}
+  h1{font-size:2rem;font-weight:900;margin-bottom:6px}
+  .sub{color:#64748b;margin-bottom:48px}
+  section{margin-bottom:52px}
+  h2{font-size:1rem;text-transform:uppercase;letter-spacing:.06em;
+     color:#94a3b8;font-weight:700;margin-bottom:20px}
+  .row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;
+        padding:24px 28px;cursor:pointer;font-weight:600;font-size:.9rem;
+        min-width:140px;text-align:center}
+  .dark-row{background:#0f172a;padding:24px;border-radius:16px}
+  .dark-card{background:rgba(255,255,255,.08);color:#e2e8f0;border-radius:12px;
+             padding:24px 28px;cursor:pointer;font-weight:600;text-align:center}
+  .flip-card{width:160px;height:100px;cursor:pointer}
+  .flip-front,.flip-back{background:#fff;border:1px solid #e2e8f0;border-radius:12px;
+                          display:flex;align-items:center;justify-content:center;
+                          font-weight:700;font-size:.9rem;width:100%;height:100%}
+  .flip-back{background:linear-gradient(135deg,#7064ff,#ff6b9d);color:#fff;border:none}
+  .btn{padding:12px 24px;border:none;border-radius:8px;cursor:pointer;
+       font-weight:700;font-size:.9rem;background:#7064ff;color:#fff}
+</style>
+</head>
+<body>
+<h1>✨ css-fx</h1>
+<p class="sub">Hover over cards to see effects. Zero JS required for most effects.</p>
+
+<section>
+  <h2>Hover — Lift</h2>
+  <div class="row">
+    <div class="card fx-lift">fx-lift</div>
+    <div class="card fx-lift-sm">fx-lift-sm</div>
+    <div class="card fx-lift-lg">fx-lift-lg</div>
+    <div class="card fx-scale">fx-scale</div>
+    <div class="card fx-shrink">fx-shrink</div>
+  </div>
+</section>
+
+<section>
+  <h2>Glow &amp; Neon</h2>
+  <div class="row dark-row">
+    <div class="dark-card fx-glow">fx-glow</div>
+    <div class="dark-card fx-neon" style="--fx-neon-color:0,255,180">fx-neon</div>
+    <div class="dark-card fx-neon" style="--fx-neon-color:255,100,180">fx-neon pink</div>
+    <div class="dark-card fx-neon" style="--fx-neon-color:100,180,255">fx-neon blue</div>
+  </div>
+</section>
+
+<section>
+  <h2>Animated — Shimmer / Pulse / Shake</h2>
+  <div class="row">
+    <div class="card fx-shimmer" style="background:linear-gradient(135deg,#7064ff,#ff6b9d);color:#fff;border:none">fx-shimmer</div>
+    <div class="card fx-pulse">fx-pulse</div>
+    <div class="card fx-rubber">fx-rubber (hover)</div>
+    <div class="card fx-shake">fx-shake (hover)</div>
+    <div class="card fx-spin" style="border-radius:50%;width:70px;height:70px;display:flex;align-items:center;justify-content:center">🌀</div>
+  </div>
+</section>
+
+<section>
+  <h2>Glassmorphism</h2>
+  <div style="background:linear-gradient(135deg,#7064ff,#06b6d4);padding:40px;border-radius:16px">
+    <div class="row">
+      <div class="fx-glass" style="padding:24px 28px;color:#fff;font-weight:700">fx-glass</div>
+      <div class="fx-glass fx-glass-sm" style="padding:18px 22px;color:#fff;font-weight:700">fx-glass-sm</div>
+      <div class="fx-glass fx-glass-dark" style="padding:24px 28px;color:#fff;font-weight:700">fx-glass-dark</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Gradient Borders</h2>
+  <div class="row">
+    <div class="fx-grad-border" style="padding:24px 28px;font-weight:700">fx-grad-border</div>
+    <div class="fx-border fx-lift" style="padding:24px 28px;background:#fff;font-weight:700">fx-border (hover)</div>
+  </div>
+</section>
+
+<section>
+  <h2>Flip Cards</h2>
+  <div class="row">
+    <div class="fx-flip flip-card">
+      <div class="fx-flip-inner" style="width:100%;height:100%">
+        <div class="flip-front">Front ✦</div>
+        <div class="flip-back">Back ✦</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Scroll Reveal (scroll down)</h2>
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <div class="card fx-reveal-up" data-fx-observe>Reveal Up</div>
+    <div class="card fx-reveal-left" data-fx-observe>Reveal Left</div>
+    <div class="card fx-reveal-zoom" data-fx-observe>Reveal Zoom</div>
+  </div>
+</section>
+
+<script>
+// Auto-observe scroll reveal elements
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('fx-visible'); io.unobserve(e.target); } });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-fx-observe]').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
