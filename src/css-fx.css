@@ -1,0 +1,291 @@
+/*!
+ * css-fx v1.0.0
+ * Zero-config CSS effects library — hover animations, glassmorphism,
+ * neon glow, flip cards, gradient borders, micro-interactions, and more.
+ * MIT License — https://github.com/hojullc/css-fx
+ * Usage: add class to any element, e.g. <div class="fx-lift">
+ */
+
+/* ─── Custom properties ─────────────────────────────────────────────── */
+:root {
+  --fx-dur:          .3s;
+  --fx-ease:         cubic-bezier(.4, 0, .2, 1);
+  --fx-glow-color:   112, 100, 255;      /* RGB for glow */
+  --fx-neon-color:   0, 255, 180;        /* RGB for neon */
+  --fx-glass-blur:   16px;
+  --fx-glass-bg:     rgba(255,255,255,.18);
+  --fx-glass-border: rgba(255,255,255,.25);
+  --fx-gradient-a:   #7064ff;
+  --fx-gradient-b:   #ff6b9d;
+}
+
+/* ─── Base transition helper (opt-in) ───────────────────────────────── */
+[class*="fx-"] { transition: transform var(--fx-dur) var(--fx-ease),
+                              box-shadow var(--fx-dur) var(--fx-ease),
+                              filter var(--fx-dur) var(--fx-ease),
+                              opacity var(--fx-dur) var(--fx-ease); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   HOVER EFFECTS
+══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Lift ───────────────────────────────────────────────────────────── */
+.fx-lift:hover      { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,.18); }
+.fx-lift-sm:hover   { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.14); }
+.fx-lift-lg:hover   { transform: translateY(-10px); box-shadow: 0 28px 56px rgba(0,0,0,.22); }
+
+/* ─── Scale ──────────────────────────────────────────────────────────── */
+.fx-scale:hover     { transform: scale(1.05); }
+.fx-scale-sm:hover  { transform: scale(1.02); }
+.fx-scale-lg:hover  { transform: scale(1.1); }
+.fx-shrink:hover    { transform: scale(.95); }
+
+/* ─── Glow ───────────────────────────────────────────────────────────── */
+.fx-glow:hover      { box-shadow: 0 0 0 3px rgba(var(--fx-glow-color),.25),
+                                  0 8px 32px rgba(var(--fx-glow-color),.35); }
+.fx-glow-sm:hover   { box-shadow: 0 0 0 2px rgba(var(--fx-glow-color),.2),
+                                  0 4px 16px rgba(var(--fx-glow-color),.25); }
+
+/* ─── Neon ───────────────────────────────────────────────────────────── */
+.fx-neon:hover      { box-shadow: 0 0 8px rgba(var(--fx-neon-color),1),
+                                  0 0 24px rgba(var(--fx-neon-color),.7),
+                                  0 0 56px rgba(var(--fx-neon-color),.4); }
+
+/* ─── Tilt / Skew ────────────────────────────────────────────────────── */
+.fx-tilt:hover      { transform: perspective(400px) rotateX(-6deg) rotateY(6deg) translateY(-4px); }
+.fx-tilt-rev:hover  { transform: perspective(400px) rotateX(6deg) rotateY(-6deg) translateY(-4px); }
+.fx-skew:hover      { transform: skewX(-4deg) scale(1.03); }
+
+/* ─── Slide ghost (shows background copy on hover) ──────────────────── */
+.fx-slide           { position: relative; overflow: hidden; }
+.fx-slide::before   { content: ''; position: absolute; inset: 0;
+                       background: rgba(255,255,255,.12); transform: translateX(-101%);
+                       transition: transform var(--fx-dur) var(--fx-ease); }
+.fx-slide:hover::before { transform: translateX(0); }
+
+/* ─── Shimmer ────────────────────────────────────────────────────────── */
+@keyframes fx-shimmer { 0%{background-position:-200%} 100%{background-position:200%} }
+.fx-shimmer {
+  position: relative; overflow: hidden; isolation: isolate;
+}
+.fx-shimmer::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(105deg,
+    transparent 40%, rgba(255,255,255,.45) 50%, transparent 60%);
+  background-size: 200% 100%;
+  animation: fx-shimmer 1.6s linear infinite;
+  pointer-events: none;
+}
+
+/* ─── Pulse ──────────────────────────────────────────────────────────── */
+@keyframes fx-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+.fx-pulse           { animation: fx-pulse 2s ease-in-out infinite; }
+.fx-pulse:hover     { animation-play-state: paused; }
+
+/* ─── Bounce ─────────────────────────────────────────────────────────── */
+@keyframes fx-bounce {
+  0%,100%{transform:translateY(0)} 25%{transform:translateY(-10px)} 75%{transform:translateY(-5px)}
+}
+.fx-bounce          { animation: fx-bounce 1.4s ease-in-out infinite; }
+
+/* ─── Spin ───────────────────────────────────────────────────────────── */
+@keyframes fx-spin  { to { transform: rotate(360deg); } }
+.fx-spin:hover      { animation: fx-spin .8s linear infinite; }
+.fx-spin-slow       { animation: fx-spin 3s linear infinite; }
+
+/* ─── Shake ──────────────────────────────────────────────────────────── */
+@keyframes fx-shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+}
+.fx-shake:hover     { animation: fx-shake .5s ease; }
+
+/* ─── Rubber-band ────────────────────────────────────────────────────── */
+@keyframes fx-rubber {
+  0%{transform:scale(1)} 30%{transform:scale(1.25,.75)}
+  40%{transform:scale(.75,1.25)} 50%{transform:scale(1.15,.85)}
+  65%{transform:scale(.95,1.05)} 75%{transform:scale(1.05,.95)} 100%{transform:scale(1)}
+}
+.fx-rubber:hover    { animation: fx-rubber .6s ease; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   GLASSMORPHISM
+══════════════════════════════════════════════════════════════════════ */
+.fx-glass {
+  background: var(--fx-glass-bg);
+  backdrop-filter: blur(var(--fx-glass-blur));
+  -webkit-backdrop-filter: blur(var(--fx-glass-blur));
+  border: 1px solid var(--fx-glass-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+}
+.fx-glass-dark {
+  --fx-glass-bg:     rgba(0,0,0,.35);
+  --fx-glass-border: rgba(255,255,255,.12);
+}
+.fx-glass-sm { --fx-glass-blur: 8px;  border-radius: 10px; }
+.fx-glass-lg { --fx-glass-blur: 32px; border-radius: 24px; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   GRADIENT BORDERS
+══════════════════════════════════════════════════════════════════════ */
+.fx-grad-border {
+  position: relative; border-radius: 12px;
+  background: var(--fx-gb-inner, #fff);
+  isolation: isolate;
+}
+.fx-grad-border::before {
+  content: ''; position: absolute; inset: -2px; z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--fx-gradient-a), var(--fx-gradient-b));
+}
+
+/* animated gradient border */
+@keyframes fx-grad-spin { to { --angle: 360deg; } }
+@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+.fx-grad-border-anim {
+  position: relative; border-radius: 12px;
+  background: var(--fx-gb-inner, #fff);
+  isolation: isolate;
+}
+.fx-grad-border-anim::before {
+  content: ''; position: absolute; inset: -2px; z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle), var(--fx-gradient-a), var(--fx-gradient-b), var(--fx-gradient-a));
+  animation: fx-grad-spin 3s linear infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   FLIP CARDS
+══════════════════════════════════════════════════════════════════════ */
+.fx-flip            { perspective: 800px; }
+.fx-flip-inner      { position: relative; transform-style: preserve-3d;
+                      transition: transform .6s var(--fx-ease); }
+.fx-flip:hover .fx-flip-inner { transform: rotateY(180deg); }
+.fx-flip-front,
+.fx-flip-back       { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.fx-flip-back       { position: absolute; inset: 0; transform: rotateY(180deg); }
+
+/* Vertical flip variant */
+.fx-flip-v:hover .fx-flip-inner { transform: rotateX(180deg); }
+.fx-flip-v .fx-flip-back        { transform: rotateX(180deg); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   BORDER TRACE (animated border on hover)
+══════════════════════════════════════════════════════════════════════ */
+.fx-trace { position: relative; }
+.fx-trace::before, .fx-trace::after {
+  content: ''; position: absolute; border-radius: inherit;
+  transition: none; opacity: 0;
+}
+.fx-trace::before {
+  inset: 0;
+  background: linear-gradient(var(--fx-gradient-a), var(--fx-gradient-b)) no-repeat;
+  background-size: 2px 100%;
+  transition: opacity var(--fx-dur) var(--fx-ease);
+}
+.fx-trace:hover::before { opacity: 1; }
+
+/* SVG-based animated border trace */
+@keyframes fx-trace-top    { 0%{width:0} 100%{width:100%} }
+@keyframes fx-trace-right  { 0%{height:0} 100%{height:100%} }
+@keyframes fx-trace-bottom { 0%{width:0} 100%{width:100%} }
+@keyframes fx-trace-left   { 0%{height:0} 100%{height:100%} }
+
+.fx-border {
+  --b: 2px; --c: var(--fx-gradient-a); --r: 8px;
+  position: relative; border-radius: var(--r);
+}
+.fx-border::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: var(--r);
+  padding: var(--b);
+  background: linear-gradient(135deg, var(--fx-gradient-a), var(--fx-gradient-b));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity var(--fx-dur) var(--fx-ease);
+}
+.fx-border:hover::before { opacity: 1; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   FADE IN ANIMATIONS (triggered by .fx-visible class via IntersectionObserver)
+══════════════════════════════════════════════════════════════════════ */
+@keyframes fx-fade-up    { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+@keyframes fx-fade-down  { from{opacity:0;transform:translateY(-24px)} to{opacity:1;transform:none} }
+@keyframes fx-fade-left  { from{opacity:0;transform:translateX(-24px)} to{opacity:1;transform:none} }
+@keyframes fx-fade-right { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:none} }
+@keyframes fx-zoom-in    { from{opacity:0;transform:scale(.85)} to{opacity:1;transform:none} }
+
+[class*="fx-reveal"] { opacity: 0; }
+[class*="fx-reveal"].fx-visible { animation-fill-mode: both; }
+
+.fx-reveal-up.fx-visible    { animation: fx-fade-up    .6s var(--fx-ease); opacity:1; }
+.fx-reveal-down.fx-visible  { animation: fx-fade-down  .6s var(--fx-ease); opacity:1; }
+.fx-reveal-left.fx-visible  { animation: fx-fade-left  .6s var(--fx-ease); opacity:1; }
+.fx-reveal-right.fx-visible { animation: fx-fade-right .6s var(--fx-ease); opacity:1; }
+.fx-reveal-zoom.fx-visible  { animation: fx-zoom-in    .6s var(--fx-ease); opacity:1; }
+
+/* stagger children */
+.fx-stagger > * { opacity: 0; }
+.fx-stagger.fx-visible > * { opacity: 1; animation: fx-fade-up .5s var(--fx-ease) both; }
+.fx-stagger.fx-visible > *:nth-child(1) { animation-delay: 0s; }
+.fx-stagger.fx-visible > *:nth-child(2) { animation-delay: .08s; }
+.fx-stagger.fx-visible > *:nth-child(3) { animation-delay: .16s; }
+.fx-stagger.fx-visible > *:nth-child(4) { animation-delay: .24s; }
+.fx-stagger.fx-visible > *:nth-child(5) { animation-delay: .32s; }
+.fx-stagger.fx-visible > *:nth-child(6) { animation-delay: .40s; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   BUTTON EFFECTS
+══════════════════════════════════════════════════════════════════════ */
+.fx-btn-fill {
+  position: relative; overflow: hidden; isolation: isolate;
+  transition: color var(--fx-dur) var(--fx-ease);
+}
+.fx-btn-fill::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--fx-gradient-a), var(--fx-gradient-b));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--fx-dur) var(--fx-ease);
+  z-index: -1;
+}
+.fx-btn-fill:hover::before { transform: scaleX(1); }
+
+.fx-btn-ripple {
+  position: relative; overflow: hidden;
+}
+.fx-btn-ripple .fx-ripple-wave {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,.35);
+  transform: scale(0); animation: fx-ripple .6s linear;
+  pointer-events: none;
+}
+@keyframes fx-ripple { to { transform: scale(4); opacity: 0; } }
+
+/* ══════════════════════════════════════════════════════════════════════
+   UTILITY HELPERS
+══════════════════════════════════════════════════════════════════════ */
+/* Delay helpers for staggered sequences */
+.fx-delay-100 { animation-delay: .1s !important; }
+.fx-delay-200 { animation-delay: .2s !important; }
+.fx-delay-300 { animation-delay: .3s !important; }
+.fx-delay-400 { animation-delay: .4s !important; }
+.fx-delay-500 { animation-delay: .5s !important; }
+
+/* Duration overrides */
+.fx-fast   { --fx-dur: .15s; }
+.fx-slow   { --fx-dur: .6s; }
+.fx-slower { --fx-dur: 1s; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  [class*="fx-"] { animation: none !important; transition: none !important; }
+  [class*="fx-reveal"] { opacity: 1 !important; }
+  .fx-stagger > * { opacity: 1 !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCROLL OBSERVER BOOTSTRAP
+   Add data-fx-observe to any element to auto-add fx-visible on scroll.
+══════════════════════════════════════════════════════════════════════ */
